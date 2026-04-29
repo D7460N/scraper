@@ -1,0 +1,36 @@
+name: Scraper
+
+on:
+  workflow_dispatch:
+
+jobs:
+  scaffolding-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Write test file
+        run: |
+          cat > .scraper-test.json <<EOF
+          {
+            "phase": "A1",
+            "purpose": "scaffolding test - proves Actions can commit back",
+            "timestamp": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')",
+            "workflow_run_id": "${{ github.run_id }}",
+            "commit_sha": "${{ github.sha }}"
+          }
+          EOF
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .scraper-test.json
+          git commit -m "A1 scaffolding test [run ${{ github.run_id }}]"
+          git push
+
+      - name: Success
+        run: echo "✅ A1 PASS — file written and pushed to repo"
