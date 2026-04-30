@@ -1,7 +1,5 @@
-# Dependabot keeps action versions up to date automatically.
+# Dependabot keeps action and package versions up to date automatically.
 # Opens pull requests when new versions release. You merge or ignore.
-#
-# npm ecosystem will be added in Phase A2 when package.json exists.
 #
 # Docs: https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
 
@@ -11,3 +9,13 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
