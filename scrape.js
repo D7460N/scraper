@@ -1,24 +1,21 @@
-// A2 scraper - captures fully-rendered DOM from a JS-heavy site.
-// Output: aoa-raw.html in repo root.
+// A2 + A3 scraper - captures rendered DOM and extracts D7460N JSON.
 //
-// Why Playwright over fetch():
-//   Wix renders content via JS after page load. A plain HTTP fetch returns
-//   the empty shell. Playwright runs a real headless Chromium that executes
-//   the JS, waits for the network to settle, then we grab the resulting DOM.
+// Output:
+//   aoa-raw.html              - full rendered HTML (for debugging)
+//   data/aoa/{slug}.json      - one file per top-level extracted key
 //
-// What this does NOT do yet:
-//   - Parse the HTML
-//   - Extract content into JSON
-//   - Follow links / scrape multiple pages
-//   - Respect robots.txt (added in A4)
-//
-// All of that comes in later phases. A2 is just: can we get the DOM at all?
+// Filenames are produced by slugify(key). No hardcoded mappings.
 
 import { chromium } from 'playwright';
-import { writeFile } from 'node:fs/promises';
+import { writeFile, mkdir } from 'node:fs/promises';
+import { dirname } from 'node:path';
+import { slugify } from './utils.js';
+import { extract } from './mapper.js';
 
 const URL = 'https://aoavirginia.com';
-const OUTPUT = 'aoa-raw.html';
+const SITE_SLUG = 'aoa';
+const RAW_HTML_PATH = 'aoa-raw.html';
+const DATA_DIR = `data/${SITE_SLUG}`;
 const TIMEOUT_MS = 30000;
 
 const browser = await chromium.launch();
@@ -30,10 +27,23 @@ const page = await context.newPage();
 console.log(`Loading ${URL}...`);
 await page.goto(URL, { waitUntil: 'networkidle', timeout: TIMEOUT_MS });
 
+// Save raw HTML for debugging / re-mapping without re-fetching
 const html = await page.content();
 console.log(`Captured ${html.length} bytes of rendered HTML`);
+await writeFile(RAW_HTML_PATH, html, 'utf8');
+console.log(`Wrote ${RAW_HTML_PATH}`);
 
-await writeFile(OUTPUT, html, 'utf8');
-console.log(`Wrote ${OUTPUT}`);
+// Extract structured JSON
+const extracted = await extract(page);
+
+// Write one JSON file per top-level key, using slugify for filename
+await mkdir(DATA_DIR, { recursive: true });
+for (const [key, content] of Object.entries(extracted)) {
+	const filename = `${slugify(key)}.json`;
+	const path = `${DATA_DIR}/${filename}`;
+	await writeFile(path, JSON.stringify(content, null, 2), 'utf8');
+	console.log(`Wrote ${path}`);
+}
 
 await browser.close();
+console.log('Done.');
