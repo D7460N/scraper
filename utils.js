@@ -1,5 +1,5 @@
 // Generic string utilities. Pure functions. No dependencies.
-// Used by mapper.js for filename generation and text cleanup.
+// Used by mappify.js for filename generation and text cleanup.
 //
 // Both functions are also valid in browser context — if you need them
 // browser-side, copy-paste verbatim or import via a build step.
