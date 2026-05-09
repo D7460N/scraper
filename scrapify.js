@@ -1,4 +1,4 @@
-// A2 + A3 scraper - captures rendered DOM and extracts D7460N JSON.
+// A2 + A3 scrapify - captures rendered DOM and extracts D7460N JSON.
 //
 // Output:
 //   aoa-raw.html              - full rendered HTML (for debugging)
@@ -10,7 +10,7 @@ import { chromium } from 'playwright';
 import { writeFile, mkdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { slugify } from './utils.js';
-import { extract } from './mapper.js';
+import { extract } from './mappify.js';
 
 const URL = 'https://aoavirginia.com';
 const SITE_SLUG = 'aoa';
@@ -20,7 +20,7 @@ const TIMEOUT_MS = 30000;
 
 const browser = await chromium.launch();
 const context = await browser.newContext({
-	userAgent: 'Mozilla/5.0 (D7460N-scraper; +https://github.com/D7460N/scraper)'
+	userAgent: 'Mozilla/5.0 (D7460N-scrapify; +https://github.com/D7460N/scrapify)'
 });
 const page = await context.newPage();
 
