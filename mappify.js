@@ -1,4 +1,4 @@
-// A3 mapper - extracts D7460N JSON content from a Wix-rendered page.
+// A3 mappify - extracts D7460N JSON content from a Wix-rendered page.
 //
 // Single-page version. Hardcoded for AOA homepage.
 // A4 will generalize this to multi-page via nav allowlist.
@@ -9,7 +9,7 @@
 //     home:  { meta, hero, ..., contact-form }  -> data/aoa/home.json
 //   }
 //
-// scrape.js iterates that output and writes one JSON file per top-level key,
+// scrapify.js iterates that output and writes one JSON file per top-level key,
 // using slugify(key) for the filename.
 
 import { slugify, normalizeText } from './utils.js';
@@ -51,7 +51,7 @@ async function texts(page, selector) {
 
 // ---------------------------------------------------------------------------
 // extract(page) -> { shell, home }
-// Called by scrape.js after page.goto() has completed.
+// Called by scrapify.js after page.goto() has completed.
 // ---------------------------------------------------------------------------
 export async function extract(page) {
 	// SHELL ---------------------------------------------------------------
