@@ -1,11 +1,11 @@
 {
-  "name": "scraper",
+  "name": "scrapify",
   "version": "0.0.1",
-  "description": "D7460N site scraper - captures rendered DOM from JS-heavy sites",
+  "description": "D7460N site scrapify - captures rendered DOM from JS-heavy sites",
   "private": true,
   "type": "module",
   "scripts": {
-    "scrape": "node scrape.js"
+    "scrape": "node scrapify.js"
   },
   "devDependencies": {
     "playwright": "^1.49.0"
